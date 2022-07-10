@@ -35,12 +35,12 @@ namespace cardooo.editor.pagetool
 			PageDebugBase page = new TimeScaleControl();
 			ShowBotton(new List<PageDebugBase>() { page }, page.CurPageName());
 			page = new GeneralPreviewScene();
-			ShowBotton(new List<PageDebugBase>() { page }, page.CurPageName());
+			ShowBotton(new List<PageDebugBase>() { new SceneObjectControl(), page }, page.CurPageName(), true);
 
 			GUILayout.EndScrollView();
 		}
 
-		public void ShowBotton(List<PageDebugBase> pages, string pageName, int height = oneFuncHeight, bool clear = false)
+		public void ShowBotton(List<PageDebugBase> pages, string pageName, bool clear = false, int height = oneFuncHeight)
 		{
 			if (GUILayout.Button($"{pageName}", GUILayout.Height(height)))
 			{

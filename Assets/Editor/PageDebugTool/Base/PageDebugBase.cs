@@ -29,7 +29,7 @@ namespace cardooo.editor.pagetool
             }
 
             GUILayout.EndHorizontal();
-            CurWidth = GUILayout.HorizontalSlider(CurWidth, 150f, 1000f, GUILayout.Height(20));
+            CurWidth = GUILayout.HorizontalSlider(CurWidth, 150f, 3000f, GUILayout.Height(20));
         }
 
         public virtual void OnClose()

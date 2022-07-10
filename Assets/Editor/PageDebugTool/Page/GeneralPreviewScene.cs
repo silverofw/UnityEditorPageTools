@@ -6,36 +6,19 @@ using UnityEngine.Rendering;
 
 namespace cardooo.editor.pagetool
 {
-    public class GeneralPreviewScene : PageDebugBase
+    /// <summary>
+    /// 參考來源:
+    /// 1. https://github.com/Unity-Technologies/UnityCsReference/blob/master/Editor/Mono/Inspector/AvatarPreview.cs
+    /// 
+    /// </summary>
+    public partial class GeneralPreviewScene : PageDebugBase
     {
+        public static GeneralPreviewScene Inst = null;
         protected override int DefaultWidth { get; set; } = 640;
-        int deltaHeight = 100;
+        int deltaHeight = 0;
         public override string CurPageName() { return "通用預覽場景"; }
 
-        public static PreviewRenderUtility CurPreviewRenderUtility = null;
-        // 预览实例对象
-        GameObject m_PreviewInstance;
-
-        public Vector3 rootPosition
-        {
-            get { return m_PreviewInstance ? m_PreviewInstance.transform.position : Vector3.zero; }
-        }
-
-        public Vector3 bodyPosition
-        {
-            get
-            {
-                return rootPosition;
-                /*
-                if (Animator && Animator.isHuman)
-                    return Animator.bodyPositionInternal;
-
-                if (m_PreviewInstance != null)
-                    return GameObjectInspector.GetRenderableCenterRecurse(m_PreviewInstance, 1, 8);
-                return Vector3.zero;
-                */
-            }
-        }
+        static PreviewRenderUtility CurPreviewRenderUtility = null;
 
         private float m_RunningTime;
         private double m_PreviousTime;
@@ -152,6 +135,8 @@ namespace cardooo.editor.pagetool
 
         public override void ShowGUI()
         {
+            Inst = this;
+
             m_scrollPosition = GUILayout.BeginScrollView(m_scrollPosition, GUILayout.Width(CurWidth));
             base.ShowGUI();
 
@@ -160,13 +145,7 @@ namespace cardooo.editor.pagetool
                 init();
             }
 
-            if (GUILayout.Button("ADD MAIN"))
-            {
-                m_PreviewInstance = GameObject.CreatePrimitive(PrimitiveType.Cube);
-                CurPreviewRenderUtility.AddSingleGO(m_PreviewInstance);
-            }
-
-            Rect drawRect = new Rect(0, 100, CurWidth, PageEditorWindow.Inst.position.height - deltaHeight);
+            Rect drawRect = new Rect(0, 40, CurWidth, PageEditorWindow.Inst.position.height);
             CurPreviewRenderUtility.BeginPreview(drawRect, GUIStyle.none);
 
 
@@ -180,8 +159,6 @@ namespace cardooo.editor.pagetool
             Graphics.DrawMesh(m_FloorPlane, matrix2, floorMaterial, PreviewCullingLayer, CurPreviewRenderUtility.camera, 0);
 
 
-            Vector3 bodyPos = rootPosition;
-
             float tempZoomFactor = (is2D ? 1.0f : m_ZoomFactor);
             // Position camera
             CurPreviewRenderUtility.camera.orthographic = is2D;
@@ -192,7 +169,7 @@ namespace cardooo.editor.pagetool
             Quaternion camRot = Quaternion.Euler(-m_PreviewDir.y, -m_PreviewDir.x, 0);
 
             // Add panning offset
-            Vector3 camPos = camRot * (Vector3.forward * -5.5f * tempZoomFactor) + bodyPos + m_PivotPositionOffset;
+            Vector3 camPos = camRot * (Vector3.forward * -10.5f * tempZoomFactor) + m_PivotPositionOffset;
             CurPreviewRenderUtility.camera.transform.position = camPos;
             CurPreviewRenderUtility.camera.transform.rotation = camRot;
 
@@ -243,12 +220,12 @@ namespace cardooo.editor.pagetool
         public override void OnClose()
         {
             base.OnClose();
-            Object.DestroyImmediate(m_PreviewInstance);
+
+            ObjectClear();
             Object.DestroyImmediate(m_ReferenceInstance);
             Object.DestroyImmediate(m_DirectionInstance);
             Object.DestroyImmediate(m_PivotInstance);
             Object.DestroyImmediate(m_RootInstance);
-            m_PreviewInstance = null;
             m_ReferenceInstance = null;
             m_DirectionInstance = null;
             m_PivotInstance = null;
@@ -300,28 +277,28 @@ namespace cardooo.editor.pagetool
             if (m_ReferenceInstance == null)
             {
                 GameObject original = (GameObject)EditorGUIUtility.Load("Avatar/dial_flat.prefab");
-                m_ReferenceInstance = UnityEngine.GameObject.Instantiate(original, Vector3.zero, Quaternion.identity);
+                m_ReferenceInstance = Object.Instantiate(original, Vector3.zero, Quaternion.identity);
                 InitInstantiatedPreviewRecursive(m_ReferenceInstance);
                 preview.AddSingleGO(m_ReferenceInstance);
             }
             if (m_DirectionInstance == null)
             {
                 GameObject original2 = (GameObject)EditorGUIUtility.Load("Avatar/arrow.fbx");
-                m_DirectionInstance = UnityEngine.GameObject.Instantiate(original2, Vector3.zero, Quaternion.identity);
+                m_DirectionInstance = Object.Instantiate(original2, Vector3.zero, Quaternion.identity);
                 InitInstantiatedPreviewRecursive(m_DirectionInstance);
                 preview.AddSingleGO(m_DirectionInstance);
             }
             if (m_PivotInstance == null)
             {
                 GameObject original3 = (GameObject)EditorGUIUtility.Load("Avatar/root.fbx");
-                m_PivotInstance = UnityEngine.GameObject.Instantiate(original3, Vector3.zero, Quaternion.identity);
+                m_PivotInstance = Object.Instantiate(original3, Vector3.zero, Quaternion.identity);
                 InitInstantiatedPreviewRecursive(m_PivotInstance);
                 preview.AddSingleGO(m_PivotInstance);
             }
             if (m_RootInstance == null)
             {
                 GameObject original4 = (GameObject)EditorGUIUtility.Load("Avatar/root.fbx");
-                m_RootInstance = UnityEngine.GameObject.Instantiate(original4, Vector3.zero, Quaternion.identity);
+                m_RootInstance = Object.Instantiate(original4, Vector3.zero, Quaternion.identity);
                 InitInstantiatedPreviewRecursive(m_RootInstance);
                 preview.AddSingleGO(m_RootInstance);
             }
@@ -415,11 +392,11 @@ namespace cardooo.editor.pagetool
         public void DoAvatarPreviewPan(Event evt)
         {
             Camera cam = CurPreviewRenderUtility.camera;
-            Vector3 screenPos = cam.WorldToScreenPoint(bodyPosition + m_PivotPositionOffset);
+            Vector3 screenPos = cam.WorldToScreenPoint(m_PivotPositionOffset);
             Vector3 delta = new Vector3(-evt.delta.x, evt.delta.y, 0);
             // delta panning is scale with the zoom factor to allow fine tuning when user is zooming closely.
             screenPos += delta * Mathf.Lerp(0.25f, 2.0f, m_ZoomFactor * 0.5f);
-            Vector3 worldDelta = cam.ScreenToWorldPoint(screenPos) - (bodyPosition + m_PivotPositionOffset);
+            Vector3 worldDelta = cam.ScreenToWorldPoint(screenPos) - (m_PivotPositionOffset);
             m_PivotPositionOffset += worldDelta;
             evt.Use();
         }
