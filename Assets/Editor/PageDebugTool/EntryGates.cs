@@ -1,5 +1,8 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
+using System;
+using System.Reflection;
+using System.Linq;
 
 namespace cardooo.editor.pagetool
 {
@@ -17,7 +20,21 @@ namespace cardooo.editor.pagetool
 			m_scrollPosition = GUILayout.BeginScrollView(m_scrollPosition, GUILayout.Width(CurWidth));
 			//base.ShowGUI();此頁面為固定視窗
 
-			var page = new TimeScaleControl();
+			/*
+            IEnumerable<Type> subclassTypes = Assembly
+			   .GetAssembly(typeof(PageDebugBase))
+			   .GetTypes()
+			   .Where(t => t.IsSubclassOf(typeof(PageDebugBase)));
+
+			foreach (Type subclassType in subclassTypes)
+			{
+				Debug.Log($"[PageDebugBase] >> {subclassType}");
+			}
+			*/
+
+			PageDebugBase page = new TimeScaleControl();
+			ShowBotton(new List<PageDebugBase>() { page }, page.CurPageName());
+			page = new GeneralPreviewScene();
 			ShowBotton(new List<PageDebugBase>() { page }, page.CurPageName());
 
 			GUILayout.EndScrollView();

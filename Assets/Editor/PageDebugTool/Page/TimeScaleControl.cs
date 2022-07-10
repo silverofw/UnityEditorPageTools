@@ -5,7 +5,7 @@ namespace cardooo.editor.pagetool
     public class TimeScaleControl : PageDebugBase
     {
         protected override int DefaultWidth { get; set; } = 350;
-        public override string CurPageName() { return "阿迦莫多之眼\nTimeScaleControl"; }
+        public override string CurPageName() { return "阿迦莫多之眼"; }
 
         float timeScale = 1f;
         float MAX_TIME_SCALE = 5f;

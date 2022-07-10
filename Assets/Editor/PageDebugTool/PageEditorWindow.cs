@@ -20,7 +20,15 @@ namespace cardooo.editor.pagetool
 			autoRepaintOnSceneChange = true;
 
 			Inst = this;
+			foreach (PageDebugBase b in staticlist)
+			{ 
+				b.OnClose();
+			}
 			staticlist.Clear();
+			foreach (PageDebugBase b in list)
+			{
+				b.OnClose();
+			}
 			list.Clear();
 			willAddlist.Clear();
 
@@ -53,8 +61,10 @@ namespace cardooo.editor.pagetool
 
 			foreach (var v in willRemovelist)
 			{
+				v.OnClose();
 				list.Remove(v);
 			}
+			willRemovelist.Clear();
 
 			foreach (var v in willAddlist)
 			{

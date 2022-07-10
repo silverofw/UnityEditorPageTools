@@ -25,11 +25,16 @@ namespace cardooo.editor.pagetool
             GUILayout.Label($"[目前寬度: {CurWidth.ToString("0.0")}]", GUILayout.Width(100));
             if (GUILayout.Button("X", GUILayout.Width(25)))
             {
-                PageEditorWindow.Inst.Remove(this);
+                PageEditorWindow.Inst.Remove(this);                
             }
 
             GUILayout.EndHorizontal();
             CurWidth = GUILayout.HorizontalSlider(CurWidth, 150f, 1000f, GUILayout.Height(20));
+        }
+
+        public virtual void OnClose()
+        { 
+            
         }
 
         public virtual string CurPageName() { return "基底頁面"; }
