@@ -42,7 +42,20 @@ namespace cardooo.editor.pagetool
 			Inst.minSize = new Vector2(640, 480);
 		}
 
-		void OnGUI()
+        private void Update()
+        {
+			foreach (var v in list)
+			{
+				v.OnUpdate();
+			}
+		}
+
+        private void OnDestroy()
+        {
+			Awake();
+        }
+
+        void OnGUI()
 		{
 			GUILayout.BeginHorizontal();
 			if (GUILayout.Button("刷新", GUILayout.Width(300)))

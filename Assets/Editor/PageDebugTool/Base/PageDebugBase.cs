@@ -32,10 +32,8 @@ namespace cardooo.editor.pagetool
             CurWidth = GUILayout.HorizontalSlider(CurWidth, 150f, 3000f, GUILayout.Height(20));
         }
 
-        public virtual void OnClose()
-        { 
-            
-        }
+        public virtual void OnUpdate() { }
+        public virtual void OnClose() { }
 
         public virtual string CurPageName() { return "基底頁面"; }
     }

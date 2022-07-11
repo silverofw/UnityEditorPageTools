@@ -14,15 +14,11 @@ namespace cardooo.editor.pagetool
     public partial class GeneralPreviewScene : PageDebugBase
     {
         public static GeneralPreviewScene Inst = null;
+        
         protected override int DefaultWidth { get; set; } = 640;
-        int deltaHeight = 0;
         public override string CurPageName() { return "通用預覽場景"; }
 
         static PreviewRenderUtility CurPreviewRenderUtility = null;
-
-        private float m_RunningTime;
-        private double m_PreviousTime;
-        private const float kDuration = 99f;
 
         // 原点圆形标识
         private GameObject m_ReferenceInstance;
@@ -125,14 +121,6 @@ namespace cardooo.editor.pagetool
             }
         }
 
-        private void Update()
-        {
-            var delta = EditorApplication.timeSinceStartup - m_PreviousTime;
-            m_PreviousTime = EditorApplication.timeSinceStartup;
-            m_RunningTime = Mathf.Clamp(m_RunningTime + (float)delta, 0f, kDuration);
-            PageEditorWindow.Inst.Repaint();
-        }
-
         public override void ShowGUI()
         {
             Inst = this;
@@ -148,16 +136,16 @@ namespace cardooo.editor.pagetool
             Rect drawRect = new Rect(0, 40, CurWidth, PageEditorWindow.Inst.position.height);
             CurPreviewRenderUtility.BeginPreview(drawRect, GUIStyle.none);
 
-
+            /*
             Quaternion identity = Quaternion.identity;
             Vector3 pos = new Vector3(0f, 0f, 0f);
             pos = m_ReferenceInstance.transform.position;
             Material floorMaterial = m_FloorMaterial;
             Matrix4x4 matrix2 = Matrix4x4.TRS(pos, identity, Vector3.one * 5f * m_AvatarScale);
-            //floorMaterial.mainTextureOffset = -new Vector2(pos.x, pos.z) * 5f * 0.08f * (1f / m_AvatarScale);
-            //floorMaterial.SetVector("_Alphas", new Vector4(0.5f * 1f, 0.3f * 1f, 0f, 0f));
+            floorMaterial.mainTextureOffset = -new Vector2(pos.x, pos.z) * 5f * 0.08f * (1f / m_AvatarScale);
+            floorMaterial.SetVector("_Alphas", new Vector4(0.5f * 1f, 0.3f * 1f, 0f, 0f));
             Graphics.DrawMesh(m_FloorPlane, matrix2, floorMaterial, PreviewCullingLayer, CurPreviewRenderUtility.camera, 0);
-
+            */
 
             float tempZoomFactor = (is2D ? 1.0f : m_ZoomFactor);
             // Position camera
@@ -166,6 +154,7 @@ namespace cardooo.editor.pagetool
                 CurPreviewRenderUtility.camera.orthographicSize = 2.0f * m_ZoomFactor;
             CurPreviewRenderUtility.camera.nearClipPlane = 0.5f * tempZoomFactor;
             CurPreviewRenderUtility.camera.farClipPlane = 100.0f * m_AvatarScale;
+
             Quaternion camRot = Quaternion.Euler(-m_PreviewDir.y, -m_PreviewDir.x, 0);
 
             // Add panning offset
@@ -174,11 +163,11 @@ namespace cardooo.editor.pagetool
             CurPreviewRenderUtility.camera.transform.rotation = camRot;
 
 
-            InternalEditorUtility.SetCustomLighting(CurPreviewRenderUtility.lights, new Color(0.6f, 0.6f, 0.6f, 1f));
+            //InternalEditorUtility.SetCustomLighting(CurPreviewRenderUtility.lights, new Color(0.6f, 0.6f, 0.6f, 1f));
             CurPreviewRenderUtility.camera.Render();
             var texture = CurPreviewRenderUtility.EndPreview();
 
-            InternalEditorUtility.RemoveCustomLighting();
+            //InternalEditorUtility.RemoveCustomLighting();
 
             int previewID = GUIUtility.GetControlID(m_PreviewHint, FocusType.Passive, drawRect);
             Event evt = Event.current;
@@ -231,7 +220,7 @@ namespace cardooo.editor.pagetool
             m_PivotInstance = null;
             m_RootInstance = null;
 
-            //CurPreviewRenderUtility.Cleanup();
+            CurPreviewRenderUtility.Cleanup();
             CurPreviewRenderUtility = null;
 
             Debug.Log("OnClose");
@@ -241,10 +230,23 @@ namespace cardooo.editor.pagetool
         {
             Debug.Log("init");
             var preview = new PreviewRenderUtility();
+            /*
             preview.camera.farClipPlane = 500;
             preview.camera.clearFlags = CameraClearFlags.SolidColor;
             preview.camera.transform.position = new Vector3(10, 4, -10);
             preview.camera.transform.eulerAngles = new Vector3(15, -45, 0);
+            */
+
+            preview.camera.cameraType = CameraType.SceneView;
+            preview.camera.clearFlags = CameraClearFlags.Skybox;
+
+            preview.camera.fieldOfView = 30.0f;
+            preview.camera.allowHDR = false;
+            preview.camera.allowMSAA = false;
+            preview.ambientColor = new Color(.1f, .1f, .1f, 0);
+            preview.lights[0].intensity = 1.4f;
+            preview.lights[0].transform.rotation = Quaternion.Euler(40f, 40f, 0);
+            preview.lights[1].intensity = 1.4f;
 
             if (m_FloorPlane == null)
             {

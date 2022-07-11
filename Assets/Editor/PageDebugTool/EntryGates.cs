@@ -31,11 +31,12 @@ namespace cardooo.editor.pagetool
 				Debug.Log($"[PageDebugBase] >> {subclassType}");
 			}
 			*/
+			
 
 			PageDebugBase page = new TimeScaleControl();
 			ShowBotton(new List<PageDebugBase>() { page }, page.CurPageName());
 			page = new GeneralPreviewScene();
-			ShowBotton(new List<PageDebugBase>() { new SceneObjectControl(), page }, page.CurPageName(), true);
+			ShowBotton(new List<PageDebugBase>() { new SceneObjectControl(), page , new AnimatorControl()}, page.CurPageName(), true);
 
 			GUILayout.EndScrollView();
 		}
