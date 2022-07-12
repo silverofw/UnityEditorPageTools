@@ -16,13 +16,15 @@ namespace cardooo.editor.pagetool
             var plist = gobj.GetComponentsInChildren<ParticleSystem>();
             foreach (ParticleSystem p in plist)
             {
-                p.useAutoRandomSeed = false;
+                if(!p.isPlaying)
+                    p.useAutoRandomSeed = false;
                 p.Play();
             }
 
             ParticleSystemList.AddRange(plist);
 
-            CurPreviewRenderUtility.AddSingleGO(gobj);
+            if(m_IsValid)
+                CurPreviewRenderUtility.AddSingleGO(gobj);
         }
 
         public void ObjectClear()

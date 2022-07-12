@@ -10,32 +10,52 @@ namespace cardooo.editor.pagetool
     {
         public static string PageName = "動畫控制";
 
-        private float m_RunningTime;
         private double m_PreviousTime;
+        private float m_RunningTime;
+        private float pre_RunningTime;
 
         private bool pause = false;
+
+        Animator animator;
+        AnimationClip clip;
+
+        float maxDuring = 0f;
+
+        public AnimatorControl()
+        {
+            m_PreviousTime = EditorApplication.timeSinceStartup;
+        }
+
         public override void OnUpdate()
         {
             base.OnUpdate();
             float delta = (float)(EditorApplication.timeSinceStartup - m_PreviousTime);
-            m_PreviousTime = EditorApplication.timeSinceStartup;
-            if (pause)
-                delta = 0;
-            m_RunningTime += delta;
+            if (!pause)
+            {
+                m_RunningTime += delta;
+            }
+
+            if (maxDuring != 0)
+            {
+                m_RunningTime %= maxDuring;
+            }
+
 
             foreach (var animator in GeneralPreviewScene.Inst.AnimatorList)
             {
-                animator.Update(delta);
+                animator.Update(m_RunningTime - pre_RunningTime);
             }
 
             foreach (var peartical in GeneralPreviewScene.Inst.ParticleSystemList)
             {
-                //var time = m_RunningTime % peartical.main.duration;
-                //var time = m_RunningTime % 100;
                 peartical.Simulate(m_RunningTime, true, true);
             }
 
             PageEditorWindow.Inst.Repaint();
+
+
+            m_PreviousTime = EditorApplication.timeSinceStartup;
+            pre_RunningTime = m_RunningTime;
         }
 
         public override void ShowGUI()
@@ -44,19 +64,66 @@ namespace cardooo.editor.pagetool
             base.ShowGUI();
 
             GUILayout.Label($"當前模擬時間: {m_RunningTime}");
+            GUILayout.Label($"目前動畫數量: {GeneralPreviewScene.Inst.AnimatorList.Count}");
+            GUILayout.Label($"目前粒子數量: {GeneralPreviewScene.Inst.ParticleSystemList.Count}");
             if (GUILayout.Button("Reset"))
             {
                 m_RunningTime = 0;
             }
 
-            if (GUILayout.Button("PAUSE"))
+            if (GUILayout.Button(pause?"復原":"暫停"))
             {
                 pause = !pause;
             }
 
-            GUILayout.Label($"目前動畫數量: {GeneralPreviewScene.Inst.AnimatorList.Count}");
-            GUILayout.Label($"目前粒子數量: {GeneralPreviewScene.Inst.ParticleSystemList.Count}");
+            maxDuring = EditorGUILayout.FloatField("最大週期:", maxDuring);
 
+            if (maxDuring != 0)
+            {
+                m_RunningTime = GUILayout.HorizontalSlider(m_RunningTime, 0f, maxDuring, GUILayout.Height(20));
+            }
+            else
+            {
+                GUILayout.HorizontalSlider(CurWidth, 0f, maxDuring, GUILayout.Height(20));
+            }
+            /* todo
+            clip = EditorGUILayout.ObjectField("產出物件: ", clip, typeof(AnimationClip), true) as AnimationClip;
+            if (GUILayout.Button("Add"))
+            {
+                if (clip == null)
+                {
+                    EditorUtility.DisplayDialog("ERROR",
+                    "No object select!",
+                    "OK");
+                }
+                else
+                {
+                    AnimationEvent evt = new AnimationEvent();
+                    evt.functionName = "OXOX";
+                    evt.time = 0.2f;
+
+                    AnimationEvent[] animationEvents = new AnimationEvent[] { evt };
+                    AnimationUtility.SetAnimationEvents(clip, animationEvents);
+
+                    animationEvents = AnimationUtility.GetAnimationEvents(clip);
+
+                    foreach (var e in animationEvents)
+                    {
+                        Debug.Log($"{e.functionName}");
+                    }
+                }
+            }
+
+            animator = EditorGUILayout.ObjectField("產出物件: ", animator, typeof(Animator), true) as Animator;
+            if (GUILayout.Button("Add"))
+            {
+                var infos = animator.GetCurrentAnimatorClipInfo(0);
+                foreach (var info in infos)
+                {
+                    Debug.Log($"[clip: {info.clip.name}]");
+                }
+            }
+            */
             GUILayout.EndScrollView();
         }
     }
