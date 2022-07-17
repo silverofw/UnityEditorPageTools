@@ -4,9 +4,11 @@ using UnityEditor;
 
 namespace cardooo.editor.pagetool
 {
-	internal class PageEditorWindow : EditorWindow
+	public abstract class PageEditorWindow : EditorWindow
 	{
 		public static PageEditorWindow Inst = null;
+
+		protected abstract PageDebugBase setStaticPageList();
 
 		List<PageDebugBase> staticlist = new List<PageDebugBase>();
 		bool clearTrigger = false;
@@ -32,14 +34,7 @@ namespace cardooo.editor.pagetool
 			list.Clear();
 			willAddlist.Clear();
 
-			staticlist.Add(new EntryGates());
-		}
-
-		[MenuItem("Tools/Editor Page Tools #m", false, 21640000)]
-		public static void OpenWindow()
-		{
-			GetWindow(typeof(PageEditorWindow));
-			Inst.minSize = new Vector2(640, 480);
+			staticlist.Add(setStaticPageList());
 		}
 
         private void Update()

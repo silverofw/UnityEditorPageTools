@@ -2558,7 +2558,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4203663781258759244}
   - component: {fileID: 4203663781266219754}
-  - component: {fileID: 2898489267349453532}
+  - component: {fileID: 3701816227939585289}
   m_Layer: 0
   m_Name: unitychan
   m_TagString: Untagged
@@ -2603,7 +2603,7 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
---- !u!114 &2898489267349453532
+--- !u!114 &3701816227939585289
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -2612,7 +2612,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 4203663781258924140}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 72d7840721751e3489799e7698a2041b, type: 3}
+  m_Script: {fileID: 11500000, guid: 076501f0fa16d5648bac23e5ea0aa74a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &4203663781258924142

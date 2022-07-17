@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using cardooo.editor.pagetool;
 
-public class CostomPage : PageDebugBase
+public class CustomPage : PageDebugBase
 {
     public static string PageName = "課製分頁";
     public override void ShowGUI()
