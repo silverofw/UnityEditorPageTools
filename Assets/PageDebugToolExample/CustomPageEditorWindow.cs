@@ -14,6 +14,6 @@ public class CustomPageEditorWindow : PageEditorWindow
 
     protected override PageDebugBase setStaticPageList()
     {
-        return new EntryGates();
+        return new CustomEntryGates();
     }
 }
