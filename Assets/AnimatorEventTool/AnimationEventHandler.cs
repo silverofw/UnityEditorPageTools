@@ -13,7 +13,8 @@ public class AnimationEventHandler : MonoBehaviour
     }
     void OnAnimationEvent(AnimationEvent animationEvent)
     {
-        Debug.Log($"[OnAnimationEvent] {animationEvent.stringParameter}, {animationEvent.intParameter}, {animationEvent.floatParameter}, {animationEvent.functionName}");
+        Debug.Log($"[OnAnimationEvent][EVENT] {animationEvent.stringParameter}, {animationEvent.intParameter}, {animationEvent.floatParameter}, {animationEvent.functionName}");
+        Debug.Log($"[OnAnimationEvent][ANIMA] {animationEvent.animatorClipInfo.clip.name}, {animationEvent.animatorStateInfo.normalizedTime}");
 
         // animationEvent.stringParameter : event name to database
         // animationEvent.intParameter : database id

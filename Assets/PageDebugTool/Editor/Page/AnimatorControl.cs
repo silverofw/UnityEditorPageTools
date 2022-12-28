@@ -20,6 +20,7 @@ namespace cardooo.editor.pagetool
         AnimationClip clip;
 
         float maxDuring = 0f;
+        string clipName = "WAIT01";
 
         public AnimatorControl()
         {
@@ -86,6 +87,21 @@ namespace cardooo.editor.pagetool
             {
                 GUILayout.HorizontalSlider(CurWidth, 0f, maxDuring, GUILayout.Height(20));
             }
+            if (GeneralPreviewScene.Inst.AnimatorList.Count > 0)
+            {
+                var clip = GeneralPreviewScene.Inst.AnimatorList[0].GetCurrentAnimatorClipInfo(0)[0].clip;
+                if (GUILayout.Button($"設定目前動畫長度: {clip.length}s"))
+                {
+                    maxDuring = clip.length;
+                }
+
+                clipName = EditorGUILayout.TextField("動畫名稱:", clipName);
+                if (GUILayout.Button("PLAY"))
+                {
+                    GeneralPreviewScene.Inst.AnimatorList[0].Play(clipName);
+                }
+            }
+
             /* todo
             clip = EditorGUILayout.ObjectField("產出物件: ", clip, typeof(AnimationClip), true) as AnimationClip;
             if (GUILayout.Button("Add"))
