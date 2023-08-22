@@ -7,8 +7,9 @@ namespace cardooo.editor.pagetool
 	public abstract class PageEditorWindow : EditorWindow
 	{
 		public static PageEditorWindow Inst = null;
+		protected virtual string TitleContent { get; } = "Editor Page Tools";
 
-		protected abstract PageDebugBase setStaticPageList();
+        protected abstract PageDebugBase setStaticPageList();
 
 		List<PageDebugBase> staticlist = new List<PageDebugBase>();
 		bool clearTrigger = false;
@@ -18,7 +19,7 @@ namespace cardooo.editor.pagetool
 
 		private void Awake()
 		{
-			titleContent = new GUIContent("Editor Page Tools", "歡迎光臨~");
+			titleContent = new GUIContent($"{TitleContent}", "歡迎光臨~");
 			autoRepaintOnSceneChange = true;
 
 			Inst = this;

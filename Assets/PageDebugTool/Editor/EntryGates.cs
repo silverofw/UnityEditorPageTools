@@ -35,10 +35,7 @@ namespace cardooo.editor.pagetool
 
 		protected virtual void ShowBtns()
 		{
-			PageDebugBase page = new TimeScaleControl();
-			ShowBotton(new List<PageDebugBase>() { page }, page.CurPageName());
-			page = new GeneralPreviewScene();
-			ShowBotton(new List<PageDebugBase>() { new SceneObjectControl(), page, new AnimatorControl() }, page.CurPageName(), true);
+
 		}
 
 		public void ShowBotton(List<PageDebugBase> pages, string pageName, bool clear = false, int height = oneFuncHeight)

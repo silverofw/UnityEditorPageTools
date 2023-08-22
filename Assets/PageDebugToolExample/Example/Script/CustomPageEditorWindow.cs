@@ -11,7 +11,7 @@ public class CustomPageEditorWindow : PageEditorWindow
         GetWindow(typeof(CustomPageEditorWindow));
         Inst.minSize = new Vector2(640, 480);
     }
-
+    protected override string TitleContent => "CostomPageEditor";
     protected override PageDebugBase setStaticPageList()
     {
         return new CustomEntryGates();
